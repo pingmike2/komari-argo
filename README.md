@@ -242,14 +242,14 @@ UUID 为空? ──→ 【是】──→ 跳过 Caddy 配置，仅运行 Komari
 
 ```bash
 # 方式1：如果设置了 ARGO_DOMAIN，使用域名访问
-http://ARGO_DOMAIN:CADDY_PROXY_PORT/UUID
+https://ARGO_DOMAIN:CADDY_PROXY_PORT/UUID
 # 例如
-http://example.com:8443/your-uuid
+https://example.com:8443/your-uuid
 
 # 方式2：如果未设置 ARGO_DOMAIN，使用公网 IP 访问
-http://CF_IP:CADDY_PROXY_PORT/UUID
+https://CF_IP:CADDY_PROXY_PORT/UUID
 # 例如
-http://1.2.3.4:8443/your-uuid
+https://1.2.3.4:8443/your-uuid
 
 # 方式3：查看生成的订阅文件
 docker exec komari cat /tmp/list.log
@@ -275,5 +275,4 @@ docker exec komari bash /app/sub_link.sh
 
 ### 致谢
 
-- 参考项目：https://github.com/jyucoeng/Docker-for-Nezha-Argo-server-v0.x
 - 原始项目：https://github.com/yutian81/komari-backup
