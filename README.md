@@ -10,7 +10,7 @@
 ## 快速开始
 
 ```bash
-IMAGE="ghcr.io/your_github_username/komari:latest"
+IMAGE="ghcr.io/jyucoeng/komari:latest"
 GH_BACKUP_USER="your_github_username"
 GH_REPO="your_private_repo_name"
 GH_PAT="your_github_personal_access_token"
@@ -90,7 +90,7 @@ docker run -d \
 **完整部署命令**：
 
 ```bash
-IMAGE="ghcr.io/your_github_username/komari:latest"
+IMAGE="ghcr.io/jyucoeng/komari:latest"
 GH_BACKUP_USER="your_github_username"
 GH_REPO="your_private_repo_name"
 GH_PAT="your_github_personal_access_token"
