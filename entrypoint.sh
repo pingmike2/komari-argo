@@ -290,14 +290,28 @@ if [ ! -f "$CADDYFILE" ]; then
   "log": { "loglevel": "warning" },
   "inbounds": [
     {
-      "listen": "127.0.0.1",
+      "listen": "0.0.0.0",
       "port": $XRAY_VLESS_PORT,
       "protocol": "vless",
       "settings": { "clients": [{ "id": "$UUID" }], "decryption": "none" },
       "streamSettings": { "network": "ws", "wsSettings": { "path": "/vls" } }
     },
     {
-      "listen": "127.0.0.1",
+      "listen": "::",
+      "port": $XRAY_VLESS_PORT,
+      "protocol": "vless",
+      "settings": { "clients": [{ "id": "$UUID" }], "decryption": "none" },
+      "streamSettings": { "network": "ws", "wsSettings": { "path": "/vls" } }
+    },
+    {
+      "listen": "0.0.0.0",
+      "port": $XRAY_VMESS_PORT,
+      "protocol": "vmess",
+      "settings": { "clients": [{ "id": "$UUID", "alterId": 0 }] },
+      "streamSettings": { "network": "ws", "wsSettings": { "path": "/vms" } }
+    },
+    {
+      "listen": "::",
       "port": $XRAY_VMESS_PORT,
       "protocol": "vmess",
       "settings": { "clients": [{ "id": "$UUID", "alterId": 0 }] },
