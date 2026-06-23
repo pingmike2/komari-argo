@@ -400,7 +400,7 @@ tail -f /opt/komari/logs/restore-cron.log
 编辑备份仓库 `README.md` 第一行为关键词，服务启动时自动备份：
 
 ```markdown
-backup now
+backup
 
 最后备份时间：2024-12-15 20:00:00 UTC
 ```
