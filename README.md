@@ -116,7 +116,6 @@ services:
       # 节点订阅配置（设置 UUID 才启用）
       UUID: ""
       CF_IP: "ip.sb"
-      SUB_HOST: ""
       SUB_NAME: "komari"
 
     volumes:
@@ -205,7 +204,6 @@ docker run -d \
   -e KOMARI_DISABLE_REMOTE="1" \
   -e UUID="" \
   -e CF_IP="ip.sb" \
-  -e SUB_HOST="" \
   -e SUB_NAME="komari" \
   -v ~/komari-data:/app/data \
   ghcr.io/jyucoeng/komari:latest
@@ -469,7 +467,6 @@ docker run -d \
   -e KOMARI_DISABLE_REMOTE="1" \
   -e UUID="" \
   -e CF_IP="ip.sb" \
-  -e SUB_HOST="" \
   -e SUB_NAME="komari" \
   -v ~/komari-data:/app/data \
   ghcr.io/jyucoeng/komari:latest

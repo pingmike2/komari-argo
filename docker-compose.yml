@@ -6,44 +6,46 @@ services:
     ports:
       - "25774:25774"
     environment:
-      # GitHub 备份配置（备份和自动还原所需）
+      # ===== 必填配置 =====
+
+      # 面板登录凭证（必填）
+      ADMIN_USERNAME: "${ADMIN_USERNAME:?set ADMIN_USERNAME in .env}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}"
+
+      # Cloudflare 隧道配置（必填，支持 Token 和 JSON 格式）
+      ARGO_DOMAIN: "${ARGO_DOMAIN:?set ARGO_DOMAIN in .env}"
+      KOMARI_CLOUDFLARED_TOKEN: "${KOMARI_CLOUDFLARED_TOKEN:?set KOMARI_CLOUDFLARED_TOKEN in .env}"
+
+      # GitHub 备份配置（必填，全部填写才启用备份）
       GH_BACKUP_USER: "${GH_BACKUP_USER:?set GH_BACKUP_USER in .env}"
       GH_REPO: "${GH_REPO:?set GH_REPO in .env}"
       GH_BACKUP_BRANCH: "${GH_BACKUP_BRANCH:-main}"
       GH_PAT: "${GH_PAT:?set GH_PAT in .env}"
       GH_EMAIL: "${GH_EMAIL:?set GH_EMAIL in .env}"
 
-      # 面板登录凭证
-      ADMIN_USERNAME: "${ADMIN_USERNAME:?set ADMIN_USERNAME in .env}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}"
+      # ===== 可选配置 =====
 
-      # Cloudflare 隧道配置（必需，支持 Token 和 JSON 格式）
-      ARGO_DOMAIN: "${ARGO_DOMAIN:?set ARGO_DOMAIN in .env}"
-      KOMARI_CLOUDFLARED_TOKEN: "${KOMARI_CLOUDFLARED_TOKEN:?set KOMARI_CLOUDFLARED_TOKEN in .env}"
-
-      # 备份时间配置
+      # 备份时间配置（可选）
       BACKUP_TIME: "${BACKUP_TIME:-0 20 * * *}"
       BACKUP_DAYS: "${BACKUP_DAYS:-10}"
       KOMARI_LOCK_TIMEOUT_SECONDS: "${KOMARI_LOCK_TIMEOUT_SECONDS:-60}"
 
-      # 脚本更新配置
+      # 脚本更新配置（可选）
       NO_AUTO_RENEW: "${NO_AUTO_RENEW:-}"
 
-      # Caddy 反代配置（可选，Caddy 用于反代 Komari 和提供订阅服务）
+      # Caddy 反代配置（可选）
       CADDY_PROXY_PORT: "${CADDY_PROXY_PORT:-8001}"
       CADDY_VERSION: "${CADDY_VERSION:-2.9.1}"
       XRAY_VLESS_PORT: "${XRAY_VLESS_PORT:-8002}"
       XRAY_VMESS_PORT: "${XRAY_VMESS_PORT:-8003}"
 
-      # Komari 远程功能开关（默认关闭 Web SSH/远程命令）
+      # Komari 远程功能开关（可选，默认关闭）
       KOMARI_DISABLE_WEB_SSH: "${KOMARI_DISABLE_WEB_SSH:-1}"
       KOMARI_DISABLE_REMOTE: "${KOMARI_DISABLE_REMOTE:-1}"
 
-      # 节点订阅配置（只有设置 UUID 时才启用订阅功能）
+      # 节点订阅配置（可选，设置 UUID 才启用）
       UUID: "${UUID:-}"
       CF_IP: "${CF_IP:-ip.sb}"
-      SUB_HOST: "${SUB_HOST:-}"
-      SUB_SNI: "${SUB_SNI:-}"
       SUB_NAME: "${SUB_NAME:-komari}"
 
     volumes:
