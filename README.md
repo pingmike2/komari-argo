@@ -96,7 +96,7 @@ GitHub Actions 会自动：
 - 复制 Token，格式为 `eyJ...`
 - 用于 `KOMARI_CLOUDFLARED_TOKEN` 环境变量
 
-**JSON 格式（备选）**
+**JSON 格式（不支持，勿用）**
 - 下载 `.json` 凭据文件，将完整内容复制到 `KOMARI_CLOUDFLARED_TOKEN`
 
 #### 3. 配置隧道路由
