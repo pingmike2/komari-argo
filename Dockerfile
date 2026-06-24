@@ -5,7 +5,18 @@ ARG CADDY_VERSION="2.9.1"
 ARG TARGETARCH
 ARG TARGETVARIANT
 
-RUN apk add --no-cache bash curl wget git sqlite jq tar supervisor coreutils unzip
+RUN apk add --no-cache \
+    bash \
+    curl \
+    wget \
+    git \
+    sqlite \
+    jq \
+    tar \
+    supervisor \
+    coreutils \
+    unzip \
+    python3
 
 RUN set -eux; \
     case "${TARGETARCH:-$(apk --print-arch)}${TARGETVARIANT:-}" in \
@@ -18,12 +29,14 @@ RUN set -eux; \
     wget -q "https://github.com/caddyserver/caddy/releases/download/v${CADDY_VERSION}/caddy_${CADDY_VERSION}_linux_${arch}.tar.gz" -O /tmp/caddy.tar.gz; \
     tar xzf /tmp/caddy.tar.gz -C /usr/local/bin caddy; \
     chmod +x /usr/local/bin/caddy; \
-    wget -q "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${arch}" -O /app/bin/cloudflared; \
-    chmod +x /app/bin/cloudflared; \
-    rm -f /tmp/caddy.tar.gz /usr/local/bin/cloudflared /usr/bin/cloudflared
+    rm -f /tmp/caddy.tar.gz; \
+    rm -f /usr/local/bin/cloudflared /usr/bin/cloudflared /app/bin/cloudflared
 
-COPY entrypoint.sh /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+COPY start_cloudflared.py /app/start_cloudflared.py
+RUN chmod +x /app/start_cloudflared.py
 
 COPY repo.conf /app/repo.conf
 
