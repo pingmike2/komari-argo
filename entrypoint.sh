@@ -15,7 +15,7 @@ RENEW_SCRIPT="/app/renew.sh"
 SUB_LINK_SCRIPT="/app/sub_link.sh"
 REPO_CONF="/app/repo.conf"
 XRAY_BIN="/app/bin/xray"
-CLOUDFLARED_BIN="/app/bin/cloudflared"
+START_CLOUDFLARED_PY="/app/start_cloudflared.py"
 CADDYFILE="/app/Caddyfile"
 SUPERVISOR_CONF="/etc/supervisor.d/damon.conf"
 WORK_DIR="/app"
@@ -180,47 +180,20 @@ if [ -z "$NO_AUTO_RENEW" ]; then
     append_cron_job "30 3 * * *" ". $(shell_quote "$CRON_ENV_FILE") && bash $(shell_quote "$RENEW_SCRIPT") >> /tmp/renew.log 2>&1"
 fi
 
-# 处理 KOMARI_CLOUDFLARED_TOKEN 格式（JSON 或 Token）
-if [[ "$KOMARI_CLOUDFLARED_TOKEN" =~ TunnelSecret ]]; then
-    # JSON 格式处理
-    KOMARI_CLOUDFLARED_TOKEN_PROCESSED="$KOMARI_CLOUDFLARED_TOKEN"
-    
-    echo "$KOMARI_CLOUDFLARED_TOKEN_PROCESSED" > "$WORK_DIR/argo.json"
-    chmod 600 "$WORK_DIR/argo.json"
+# 仅支持 Argo Token 模式
 
-    # 从 JSON 凭据中提取 Tunnel ID
-    TUNNEL_ID=$(jq -r '.TunnelID // .TunnelId // .tunnel_id // empty' "$WORK_DIR/argo.json" 2>/dev/null)
-    if [ -z "$TUNNEL_ID" ]; then
-        error "错误：无法从 KOMARI_CLOUDFLARED_TOKEN JSON 中提取 Tunnel ID"
-    fi
-    
-    # 生成 argo.yml 配置文件
-    cat > "$WORK_DIR/argo.yml" << 'ARGO_EOF'
-tunnel: TUNNEL_ID_PLACEHOLDER
-credentials-file: /app/argo.json
-protocol: http2
+if [[ "$KOMARI_CLOUDFLARED_TOKEN" =~ ^ey[A-Za-z0-9._=-]+$ ]]; then
 
-ingress:
-  - hostname: ARGO_DOMAIN_PLACEHOLDER
-    service: http://localhost:CADDY_PROXY_PORT_PLACEHOLDER
-  - service: http_status:404
-ARGO_EOF
-    
-    # 替换占位符
-    sed -i "s|TUNNEL_ID_PLACEHOLDER|$TUNNEL_ID|g" "$WORK_DIR/argo.yml"
-    sed -i "s|ARGO_DOMAIN_PLACEHOLDER|$ARGO_DOMAIN|g" "$WORK_DIR/argo.yml"
-    sed -i "s|CADDY_PROXY_PORT_PLACEHOLDER|$CADDY_PROXY_PORT|g" "$WORK_DIR/argo.yml"
-    
-    CLOUDFLARED_CMD="$CLOUDFLARED_BIN tunnel --edge-ip-version auto --config $WORK_DIR/argo.yml run"
-    hint "Cloudflare 隧道配置完成（JSON 格式）"
-    
-elif [[ "$KOMARI_CLOUDFLARED_TOKEN" =~ ^ey[A-Za-z0-9_-]{80,}=*$ ]]; then
-    # Token 格式处理
-    CLOUDFLARED_CMD="$CLOUDFLARED_BIN tunnel --edge-ip-version auto --protocol http2 run --token ${KOMARI_CLOUDFLARED_TOKEN}"
-    hint "Cloudflare 隧道配置完成（Token 格式）"
-    
+    # 提供给 start_cloudflared.py 使用
+    export ARGO_AUTH="$KOMARI_CLOUDFLARED_TOKEN"
+
+    # 使用动态库启动器代替官方 cloudflared
+    CLOUDFLARED_CMD="env ARGO_AUTH='$KOMARI_CLOUDFLARED_TOKEN' python3 /app/start_cloudflared.py"
+
+    hint "Cloudflare 动态库模式已启用"
+
 else
-    error "错误：KOMARI_CLOUDFLARED_TOKEN 格式不正确（应为 JSON 或 Token）"
+    error "错误：KOMARI_CLOUDFLARED_TOKEN 必须为有效的 Argo Token"
 fi
 
 # 检测系统架构
@@ -249,17 +222,6 @@ if ! command -v caddy >/dev/null 2>&1 || ! caddy version 2>/dev/null | grep -q "
     info "Caddy v$CADDY_LATEST 安装完成" || error "Caddy 下载失败"
 else
     info "Caddy v$CADDY_LATEST 已安装，跳过下载"
-fi
-
-# 下载 Cloudflared 二进制文件
-if [ ! -x "$CLOUDFLARED_BIN" ]; then
-    info "正在下载 Cloudflared..."
-    mkdir -p "$(dirname "$CLOUDFLARED_BIN")" && \
-    wget -q --show-progress https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH} -O "$CLOUDFLARED_BIN" && \
-    chmod +x "$CLOUDFLARED_BIN" && \
-    info "Cloudflared 安装完成" || error "Cloudflared 下载失败"
-else
-    info "Cloudflared 已安装，跳过下载"
 fi
 
 if [ -n "${UUID:-}" ] && [ "$UUID" != "0" ]; then
