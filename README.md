@@ -151,7 +151,7 @@ URL: localhost:8001
 - **[方式一：Docker Compose](#方式一docker-compose推荐)** (推荐) - 一键部署，开箱即用，容器化隔离
 - **[方式二：Docker Run](#方式二docker-run)** - 单条命令启动，无需 docker-compose.yml
 - **[方式三：VPS 原生安装](#方式三vps-原生安装无-docker-环境)** - 性能最优，需要 Linux/macOS，直接运行服务
-- **[方式四：抱脸安装](#方式四抱脸docker-环境)** - 白嫖最优，只需要注册个抱脸账号.
+- **[方式四：抱脸安装](🚀 Hugging Face 部署指南)** - 白嫖最优，只需要注册个抱脸账号.
 
 ---
 
@@ -789,7 +789,7 @@ https://komari.example.com/550e8400-e29b-41d4-a716-446655440000
 - ✅ **限制远程命令功能** - 默认关闭，必要时才启用
 - ✅ **定期备份配置** - 使用 GitHub 备份功能
 
-# 🚀 Hugging Face 部署指南（Komari + Telegram 通知）
+### 🚀 Hugging Face 部署指南
 
 ## 一、配置 Hugging Face 环境
 
