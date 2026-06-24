@@ -22,7 +22,6 @@ index.html是伪装页面，建议用 AI 生成自定义内容，隐藏真实身
 <a id="0-架构说明"></a>
 
 ## 架构说明
-
 Cloudflare Tunnel 只需要把域名转发到容器内 Caddy，Caddy 负责路由转发到各个服务：
 
 **Cloudflare Tunnel 配置：**
@@ -34,6 +33,8 @@ URL: http://localhost:8001
 
 **容器内部流量路由：**
 ```
+7860→静态伪装页面index.html
+
 Cloudflare Tunnel
         ↓
 Caddy (:8001)
