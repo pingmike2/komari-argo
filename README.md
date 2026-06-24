@@ -1,6 +1,8 @@
 # Komari~hug
 
-基于 Komari 的增强封装，集成 Cloudflare Tunnel、Caddy 反代、VLESS/VMESS 订阅、GitHub 备份和脚本自动更新。
+基于 Komari 的增强封装，集成 Cloudflare Tunnel、Caddy 反代、GitHub 备份和脚本自动更新。
+
+index.html是伪装页面，建议用 AI 生成自定义内容，隐藏真实身份，未去除xray代理相关代码，勿设置uuid防止hug封号
 
 ## 📚 快速导航
 
