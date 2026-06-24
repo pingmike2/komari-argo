@@ -174,6 +174,22 @@ if [ "$BACKUP_ENABLED" = "1" ]; then
     append_cron_job "* * * * *" ". $(shell_quote "$CRON_ENV_FILE") && bash $(shell_quote "$RESTORE_SCRIPT") a >> /tmp/restore-cron.log 2>&1"
 fi
 
+# HuggingFace 首页
+mkdir -p /app/site
+
+if [ -f /app/index.html ]; then
+    cp -f /app/index.html /app/site/index.html
+fi
+
+cat > /app/site.Caddyfile << 'EOF'
+:7860 {
+    root * /app/site
+    file_server
+
+    respond /health "OK" 200
+}
+EOF
+
 # 添加脚本更新任务（如果未禁用自动更新，则每天 03:30 UTC 执行）
 # 默认自动更新，用户可通过设置 NO_AUTO_RENEW=1 禁用
 if [ -z "$NO_AUTO_RENEW" ]; then
@@ -428,6 +444,18 @@ autostart=true
 autorestart=true
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+
+[program:hf-site]
+command=/usr/local/bin/caddy run --config /app/site.Caddyfile
+
+autostart=true
+autorestart=true
+
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 
