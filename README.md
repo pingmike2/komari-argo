@@ -797,6 +797,10 @@ https://komari.example.com/550e8400-e29b-41d4-a716-446655440000
 #### 保活
 抱脸空间需要保活的，自行解决。
 
+因为抱脸平台问题，所以Komari的TG通知需要设置反代。
+复制仓库_worker.js里面的代码去cf wokers部署并且需要绑定域名。
+请求断点填入格式：https://你的自定义域名/bot
+
 ---
 
 ### *祝部署顺利！* 🎉
@@ -809,3 +813,4 @@ https://komari.example.com/550e8400-e29b-41d4-a716-446655440000
 - [Komari Monitor](https://github.com/komari-monitor/komari) - 官方项目
 - [Argo-Nezha-Service-Container](https://github.com/Kiritocyz/Argo-Nezha-Service-Container)
 - [Argo-Nezha-V1-hug](https://github.com/oyz8/nz)
+- [hug-tgbot-api](https://github.com/oyz8/LemeHost/blob/main/_worker.js)
