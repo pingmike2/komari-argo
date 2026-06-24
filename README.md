@@ -794,12 +794,496 @@ https://komari.example.com/550e8400-e29b-41d4-a716-446655440000
 - ✅ **限制远程命令功能** - 默认关闭，必要时才启用
 - ✅ **定期备份配置** - 使用 GitHub 备份功能
 
-#### 保活
-抱脸空间需要保活的，自行解决。
+# 🚀 Hugging Face 部署指南（Komari + Telegram 通知）
 
-因为抱脸平台问题，所以Komari的TG通知需要设置反代。
-复制仓库_worker.js里面的代码去cf wokers部署并且需要绑定域名。
-请求断点填入格式：https://你的自定义域名/bot
+## 一、配置 Hugging Face 环境
+
+### 1. 注册并登录 Hugging Face
+
+访问：
+
+https://huggingface.co/
+
+### 2. 创建 Space
+
+点击：
+
+New Space
+
+配置如下：
+
+| 项目 | 配置 |
+|--------|--------|
+| Owner | 你的账号 |
+| Space name | 自定义 |
+| License | 任意 |
+| SDK | Docker |
+| Visibility | Public 或 Private |
+
+创建完成后进入仓库。
+
+---
+
+## 二、配置环境变量
+
+进入：
+
+Settings → Repository Secrets
+
+将项目所需环境变量全部添加进去。
+
+填写完成后保存。
+
+---
+
+## 三、创建 Dockerfile
+
+在仓库根目录创建：
+
+```text
+Dockerfile
+```
+
+内容：
+
+```dockerfile
+FROM ghcr.io/xx/xx
+```
+
+请替换为实际镜像。
+
+提交后 Hugging Face 会自动开始构建。
+
+---
+
+## 四、查看部署状态
+
+进入：
+
+Logs
+
+查看实时构建日志。
+
+首次部署通常需要几分钟时间。
+
+正常流程：
+
+```text
+Building image...
+Installing...
+Starting container...
+Running...
+```
+
+若出现错误：
+
+- 检查 Dockerfile
+- 检查环境变量
+- 检查镜像地址是否正确
+- 查看 Logs 错误信息
+
+---
+
+## 五、访问服务
+
+部署成功后：
+
+进入：
+
+Settings → Runtime
+
+等待 Space 状态变为：
+
+```text
+Running
+```
+
+随后使用：
+
+```text
+https://你的ARGO_DOMAIN
+```
+
+访问服务。
+
+例如：
+
+```text
+https://komari.example.com
+```
+
+即可进入 Komari 面板。
+
+---
+
+## 六、Hugging Face 休眠说明
+
+Hugging Face Free Space 会自动休眠。
+
+表现为：
+
+- 一段时间无人访问
+- 容器自动停止
+- 再次访问时重新启动
+
+属于正常现象。
+
+---
+
+## 七、推荐保活方案
+
+### 方法一：Uptime Kuma
+
+每 5 分钟访问一次：
+
+```text
+https://你的space地址
+```
+
+即可保持在线。
+
+---
+
+### 方法二：Cron-job.org
+
+添加定时任务：
+
+```text
+GET
+https://你的space地址
+```
+
+间隔：
+
+```text
+5分钟
+```
+
+---
+
+
+# 📢 Telegram 通知反代配置（必需）
+
+## 为什么需要反代
+
+由于 Hugging Face 网络限制：
+
+Komari 无法直接连接 Telegram API。
+
+因此必须使用：
+
+```text
+Cloudflare Workers
+```
+
+进行反向代理。
+
+---
+
+## 八、创建 Telegram API Worker
+
+打开项目文件：
+
+```text
+hug-tg-api/_worker.js
+```
+
+复制全部内容。
+
+---
+
+## 九、登录 Cloudflare
+
+进入：
+
+https://dash.cloudflare.com/
+
+打开：
+
+```text
+Workers & Pages
+```
+
+---
+
+## 十、创建 Worker
+
+点击：
+
+```text
+Create Application
+```
+
+↓
+
+```text
+Create Worker
+```
+
+↓
+
+```text
+Deploy
+```
+
+↓
+
+```text
+Edit Code
+```
+
+删除默认代码。
+
+粘贴：
+
+```javascript
+_worker.js
+```
+
+全部内容。
+
+保存并部署。
+
+---
+
+## 十一、绑定自定义域名
+
+进入：
+
+```text
+Worker
+```
+
+↓
+
+```text
+Settings
+```
+
+↓
+
+```text
+Domains & Routes
+```
+
+↓
+
+```text
+Add Custom Domain
+```
+
+绑定域名。
+
+例如：
+
+```text
+tg.example.com
+```
+
+部署完成后测试：
+
+```text
+https://tg.example.com/bot
+```
+
+若返回正常内容则表示部署成功。
+
+---
+
+## 十二、配置 Komari
+
+进入：
+
+```text
+Komari 面板
+```
+
+↓
+
+```text
+系统设置
+```
+
+↓
+
+```text
+通知设置
+```
+
+↓
+
+```text
+Telegram
+```
+
+将请求地址填写为：
+
+```text
+https://你的域名/bot
+```
+
+例如：
+
+```text
+https://tg.example.com/bot
+```
+
+保存配置。
+
+---
+
+## 十三、填写 Telegram 信息
+
+Bot Token：
+
+```text
+123456:ABCDEFxxxxxxxxxxxx
+```
+
+Chat ID：
+
+```text
+123456789
+```
+
+填写完成后保存。
+
+---
+
+## 十四、发送测试通知
+
+点击：
+
+```text
+发送测试消息
+```
+
+如果收到消息：
+
+```text
+Komari Test Message
+```
+
+则配置成功。
+
+---
+
+# ✅ 完成
+
+至此已完成：
+
+- Hugging Face Space 部署
+- Docker 容器运行
+- Cloudflare Tunnel 接入
+- Komari 面板部署
+- Telegram Bot 配置
+- Cloudflare Workers 反代
+- Telegram 通知功能接入
+
+---
+
+# 🔧 故障排查
+
+### Space 无法启动
+
+检查：
+
+```text
+Logs
+```
+
+查看构建错误。
+
+---
+
+### 无法访问面板
+
+检查：
+
+```text
+ARGO_DOMAIN
+```
+
+是否填写正确。
+
+---
+
+### Telegram 无法发送
+
+检查：
+
+```text
+TG_BOT_TOKEN
+TG_CHAT_ID
+```
+
+是否正确。
+
+检查：
+
+```text
+https://你的域名/bot
+```
+
+是否能够正常访问。
+
+---
+
+### Worker 报错
+
+检查：
+
+```text
+_worker.js
+```
+
+是否完整复制。
+
+检查：
+
+```text
+Cloudflare 域名绑定
+```
+
+是否生效。
+
+---
+
+### Space 自动休眠
+
+属于 Hugging Face 免费版正常行为。
+
+建议：
+
+```text
+Uptime Kuma
+Cron-job.org
+```
+
+任选一种保活方案。
+
+---
+
+# 🎉 部署完成
+
+现在你已经拥有：
+
+✅ Hugging Face Space  
+✅ Komari 面板  
+✅ Cloudflare Tunnel  
+✅ Telegram 消息通知  
+✅ Cloudflare Workers Telegram API 反代
+
+长期运行建议：
+
+```text
+开启保活
+定期检查 Logs
+定期备份配置
+```
+
+
+
 
 ---
 
