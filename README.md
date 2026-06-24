@@ -51,7 +51,7 @@ Caddy (:8001)
 
 ### 第一步：修改源码仓库配置
 
-Fork 本仓库后，编辑 `.github/workflows/publish-to-ghcr.yml` 文件，将 `27行` 修改成人蓄无害的名字
+Fork 本仓库后，编辑 `.github/workflows/publish-to-ghcr.yml` 文件，将 `25行` 修改成人蓄无害的名字
 
 
 ### 第二步：构建和发布镜像
@@ -61,7 +61,7 @@ Fork 本仓库后，编辑 `.github/workflows/publish-to-ghcr.yml` 文件，将 
 GitHub Actions 会自动：
 1. 检测 `main` 分支的推送
 2. 构建 Docker 镜像
-3. 发布到 `ghcr.io/YOUR_USERNAME/komari:latest`
+3. 发布到 `ghcr.io/YOUR_USERNAME/xxx:bbh`
 
 只需执行第一步即可，无需手动操作。
 
@@ -150,6 +150,7 @@ URL: localhost:8001
 - **[方式一：Docker Compose](#方式一docker-compose推荐)** (推荐) - 一键部署，开箱即用，容器化隔离
 - **[方式二：Docker Run](#方式二docker-run)** - 单条命令启动，无需 docker-compose.yml
 - **[方式三：VPS 原生安装](#方式三vps-原生安装无-docker-环境)** - 性能最优，需要 Linux/macOS，直接运行服务
+- **[方式四：抱脸安装](#方式四抱脸docker-环境)** - 白嫖最优，只需要注册个抱脸账号.
 
 ---
 
