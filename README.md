@@ -801,3 +801,4 @@ https://komari.example.com/550e8400-e29b-41d4-a716-446655440000
 - [Komari Backup](https://github.com/yutian81/komari-backup)
 - [Komari Monitor](https://github.com/komari-monitor/komari) - 官方项目
 - [Argo-Nezha-Service-Container](https://github.com/Kiritocyz/Argo-Nezha-Service-Container)
+- [Argo-Nezha-V1-hug](https://github.com/oyz8/nz)
