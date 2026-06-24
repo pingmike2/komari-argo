@@ -8,7 +8,7 @@ hint() { echo -e "\033[33m\033[01m$*\033[0m"; }
 # 定义文件路径
 CRON_ENV_FILE="/app/cron_env.sh"
 CRONTAB_DIR="/etc/crontabs"
-CRONTAB_FILE="$CRONTAB_DIR/root"
+CRONTAB_FILE="/etc/crontab"
 BACKUP_SCRIPT="/app/backup.sh"
 RESTORE_SCRIPT="/app/restore.sh"
 RENEW_SCRIPT="/app/renew.sh"
@@ -421,7 +421,7 @@ serverurl=unix:///run/supervisor.sock
 supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
 [program:cron]
-command=/bin/busybox crond -f -c /etc/crontabs
+command=cron -f
 autostart=true
 autorestart=true
 stderr_logfile=/dev/stderr
