@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-# 安装依赖
+# 安装依赖（包含 cron）
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         wget \
@@ -15,7 +15,8 @@ RUN apt-get update && \
         python3 \
         supervisor \
         procps \
-        tzdata && \
+        tzdata \
+        cron && \
     rm -rf /var/lib/apt/lists/*
 
 # 环境变量
@@ -68,7 +69,7 @@ RUN chmod +x /app/sub_link.sh
 # 创建目录
 RUN mkdir -p /app/data /tmp
 
-# HuggingFace 必须端口
+# HuggingFace 端口
 EXPOSE 7860
 
 # 启动
