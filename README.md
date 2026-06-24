@@ -51,15 +51,8 @@ Caddy (:8001)
 
 ### 第一步：修改源码仓库配置
 
-Fork 本仓库后，编辑 `repo.conf` 文件，将 `jyucoeng` 改为你的 GitHub 用户名：
+Fork 本仓库后，编辑 `.github/workflows/publish-to-ghcr.yml` 文件，将 `27行` 修改成人蓄无害的名字
 
-```bash
-# repo.conf 修改前
-KOMARI_PROJECT_OWNER="${KOMARI_PROJECT_OWNER:-jyucoeng}"
-
-# repo.conf 修改后
-KOMARI_PROJECT_OWNER="${KOMARI_PROJECT_OWNER:-YOUR_USERNAME}"
-```
 
 ### 第二步：构建和发布镜像
 
@@ -70,7 +63,7 @@ GitHub Actions 会自动：
 2. 构建 Docker 镜像
 3. 发布到 `ghcr.io/YOUR_USERNAME/komari:latest`
 
-只需 push 代码即可，无需手动操作。
+只需执行第一步即可，无需手动操作。
 
 ---
 
