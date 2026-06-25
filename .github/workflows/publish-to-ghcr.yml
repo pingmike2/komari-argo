@@ -3,25 +3,23 @@ name: 🐳 publish-to-ghcr
 on:
   push:
     branches: [ main ]
+
   schedule:
-    # 每天北京时间上午 10 点 (UTC 2 点) 自动执行一次检查并构建
+    # 每天北京时间上午 10 点 (UTC 2 点)
     - cron: '0 2 * * *'
+
   workflow_dispatch:
-    inputs:
-      komari_version:
-        description: "指定上游版本号 (留空则自动获取上游最新版)"
-        required: false
-        default: ""
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
 
     env:
-      # 👇 镜像后缀（你可以随便改这个名字）
+      # 镜像名称后缀
       IMAGE_SUFFIX: kome
 
     steps:
@@ -30,21 +28,7 @@ jobs:
 
       - name: 🧭 Set image metadata
         run: |
-          # ✅ GitHub 自动获取 owner + 自定义镜像名
           echo "IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/${IMAGE_SUFFIX}" >> "$GITHUB_ENV"
-
-          # 版本逻辑
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.komari_version }}" ]; then
-            VERSION="${{ github.event.inputs.komari_version }}"
-          else
-            VERSION=$(curl -s https://api.github.com/repos/komari-monitor/komari/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-            if [ -z "$VERSION" ]; then
-              VERSION="latest"
-            fi
-          fi
-
-          echo "本次构建对应的上游版本为: $VERSION"
-          echo "KOMARI_VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: 🏷️ Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -67,8 +51,5 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
-            ${{ env.KOMARI_VERSION != 'latest' && format('{0}:{1}', env.IMAGE_NAME, env.KOMARI_VERSION) || '' }}
-          build-args: |
-            KOMARI_VERSION=${{ env.KOMARI_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
